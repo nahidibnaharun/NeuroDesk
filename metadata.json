@@ -1,0 +1,6 @@
+{
+  "name": "AI Study Buddy",
+  "description": "An AI-powered learning assistant that ingests your notes and materials to generate personalized quizzes, flashcards, and summaries, helping you study smarter and track your progress.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}
