@@ -4,53 +4,497 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI Study Buddy</title>
+    <title>NeuroDesk</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+      /* Custom scrollbar for a more modern look */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f5f9; /* slate-100 */
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #94a3b8; /* slate-400 */
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #64748b; /* slate-500 */
+      }
       body {
-        font-family: 'Inter', sans-serif;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
       }
-      /* Custom styles for scrollbar */
-      ::-webkit-scrollbar { width: 8px; height: 8px; }
-      ::-webkit-scrollbar-track { background: transparent; }
-      ::-webkit-scrollbar-thumb { background-color: rgba(34, 211, 238, 0.3); border-radius: 10px; border: 2px solid transparent; background-clip: content-box; }
-      ::-webkit-scrollbar-thumb:hover { background-color: rgba(34, 211, 238, 0.5); }
 
-      html.dark ::-webkit-scrollbar-thumb { background-color: rgba(100, 116, 139, 0.5); }
-      html.dark ::-webkit-scrollbar-thumb:hover { background-color: rgba(100, 116, 139, 0.7); }
+      /* Page/Component Animations */
+      @keyframes fadeInSlideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .animate-fade-in-slide-up {
+        opacity: 0; /* Start hidden */
+        animation: fadeInSlideUp 0.7s ease-out forwards;
+      }
 
-      /* Recharts text color override */
-      :root {
-        --recharts-text-fill-color: #475569; /* slate-600 */
+      @keyframes slideInFromRight {
+        from {
+            opacity: 0.8;
+            transform: translateX(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
       }
-      html.dark {
-        --recharts-text-fill-color: #94a3b8; /* slate-400 */
+      .animate-slide-in {
+          animation: slideInFromRight 0.5s ease-out forwards;
       }
-      .recharts-text {
-        fill: var(--recharts-text-fill-color);
+
+
+      /* Typing dots loader animation */
+      @keyframes bounce-dot {
+        0%, 80%, 100% { transform: scale(0); }
+        40% { transform: scale(1.0); }
+      }
+      .dot-1 { animation: bounce-dot 1.4s infinite ease-in-out both; animation-delay: -0.32s; }
+      .dot-2 { animation: bounce-dot 1.4s infinite ease-in-out both; animation-delay: -0.16s; }
+      .dot-3 { animation: bounce-dot 1.4s infinite ease-in-out both; }
+      
+      /* Button Shimmer Effect */
+      .shimmer-button {
+        position: relative;
+        overflow: hidden;
+      }
+      .shimmer-button:hover::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+          to right,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 0.2) 50%,
+          rgba(255, 255, 255, 0) 100%
+        );
+        transform: rotate(20deg);
+        animation: shimmer 2s infinite;
+      }
+      @keyframes shimmer {
+        0% {
+          transform: translateX(-100%) rotate(20deg);
+        }
+        100% {
+          transform: translateX(100%) rotate(20deg);
+        }
+      }
+
+      /* Animated Gradient Background for buttons */
+      @keyframes gradient-move {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+      .animated-gradient-bg {
+        background: linear-gradient(-45deg, #4f46e5, #7c3aed, #db2777, #f59e0b);
+        background-size: 400% 400%;
+        animation: gradient-move 12s ease infinite;
+      }
+      .animated-gradient-bg:hover {
+        animation-duration: 6s;
+      }
+      .animated-gradient-bg-green {
+        background: linear-gradient(-45deg, #16a34a, #22c55e, #84cc16, #4ade80);
+        background-size: 400% 400%;
+        animation: gradient-move 12s ease infinite;
+      }
+      .animated-gradient-bg-green:hover {
+        animation-duration: 6s;
+      }
+      .disabled\:animate-none:disabled {
+        animation: none;
+      }
+
+      /* Card Flip Animation */
+      .perspective {
+        perspective: 1000px;
+      }
+      .card-flipper {
+        transition: transform 1s, height 0.4s ease-out;
+        transform-style: preserve-3d;
+        position: relative;
+      }
+      .card-flipper.is-flipped {
+        transform: rotateY(180deg);
+      }
+      .card-face {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+      }
+      .card-back {
+        transform: rotateY(180deg);
+      }
+
+      /* Animated Aurora Background */
+      @keyframes aurora-glow {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+      .animate-aurora-glow {
+        background: linear-gradient(-45deg, #eef2ff, #f3e8ff, #e0f2fe, #dbeafe);
+        background-size: 400% 400%;
+        animation: aurora-glow 20s ease infinite;
+      }
+
+      /* Background Particle Animation */
+      #particle-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        overflow: hidden;
+      }
+      .particle {
+        position: absolute;
+        background-color: rgba(129, 140, 248, 0.4); /* indigo-400 with opacity */
+        border-radius: 50%;
+        opacity: 0;
+        animation: particle-float 25s infinite linear;
+      }
+
+      @keyframes particle-float {
+        0% { transform: translateY(0) translateX(0); opacity: 0; }
+        25% { opacity: 1; }
+        50% { transform: translateY(-50vh) translateX(10vw); }
+        75% { opacity: 1; }
+        100% { transform: translateY(-100vh) translateX(-10vw); opacity: 0; }
+      }
+
+      /* Confetti Animation */
+      @keyframes confetti-fall {
+        0% { transform: translateY(-10vh) rotateZ(0deg); opacity: 1; }
+        100% { transform: translateY(110vh) rotateZ(720deg); opacity: 0; }
+      }
+      .confetti-piece {
+        position: fixed;
+        top: 0;
+        width: 10px;
+        height: 10px;
+        opacity: 0;
+        animation-name: confetti-fall;
+        animation-duration: 5s;
+        animation-timing-function: linear;
+        animation-fill-mode: forwards;
+        z-index: 9999;
+      }
+
+      /* Focus Timer Digit Animation */
+      @keyframes digit-flip {
+        from {
+          opacity: 0;
+          transform: translateY(-15px) rotateX(0.25turn);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) rotateX(0);
+        }
+      }
+      .digit-animation {
+        display: inline-block;
+        animation: digit-flip 0.6s ease-out forwards;
+        transform-origin: center;
+      }
+
+      /* AI Teacher Eye Blink Animation */
+      @keyframes blink {
+        0%, 50%, 100% { transform: scaleY(1); }
+        52%, 98% { transform: scaleY(0.1); }
+      }
+      .blinking-eye {
+        animation: blink 5s infinite ease-in-out;
+        animation-delay: 1.5s;
+        transform-origin: center;
+      }
+
+      /* History item delete animation */
+      @keyframes fadeOutShrink {
+        from {
+          opacity: 1;
+          transform: scale(1);
+          max-height: 500px;
+        }
+        to {
+          opacity: 0;
+          transform: scale(0.95);
+          max-height: 0;
+          padding-top: 0;
+          padding-bottom: 0;
+          margin-top: 0;
+          margin-bottom: 0;
+          border-width: 0;
+        }
+      }
+      .animate-fade-out-shrink {
+        animation: fadeOutShrink 0.6s ease-out forwards;
+        overflow: hidden;
+      }
+
+      /* Card hover effect */
+      .history-card-hover {
+        transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+      }
+      .history-card-hover:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1); /* shadow-lg */
+      }
+
+      /* --- Flowchart Stylish Design --- */
+      .flow-connector {
+        position: relative;
+        background: repeating-linear-gradient(
+          to bottom,
+          #a8b2c5,
+          #a8b2c5 5px,
+          transparent 5px,
+          transparent 10px
+        );
+        background-size: 100% 20px;
+      }
+      .flow-connector::after { /* Arrowhead */
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 8px solid #a8b2c5;
+      }
+      
+      .flow-connector-horizontal {
+        position: relative;
+        background: repeating-linear-gradient(
+          to right,
+          #a8b2c5,
+          #a8b2c5 5px,
+          transparent 5px,
+          transparent 10px
+        );
+        background-size: 20px 100%;
+      }
+      .flowchart-bg {
+        background-color: #f8fafc; /* slate-50 */
+        background-image:
+          linear-gradient(rgba(148, 163, 184, 0.1) 1px, transparent 1px),
+          linear-gradient(to right, rgba(148, 163, 184, 0.1) 1px, transparent 1px);
+        background-size: 20px 20px;
+      }
+
+      /* Text-to-Speech Highlight */
+      .speaking-highlight {
+        background-color: #e0e7ff; /* indigo-100 */
+        transition: background-color 0.2s ease-out;
+        border-radius: 3px;
+        padding: 0 2px;
+      }
+
+      /* Print styles for Report Card */
+      @media print {
+        body * {
+          visibility: hidden;
+        }
+        #report-card-printable, #report-card-printable * {
+          visibility: visible;
+        }
+        #report-card-printable {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+          border: none !important;
+          box-shadow: none !important;
+        }
+        .no-print {
+          display: none !important;
+        }
+        /* Ensure dark mode colors don't apply to print */
+        .dark #report-card-printable, .dark #report-card-printable * {
+            color: #1e293b !important;
+            background-color: #ffffff !important;
+        }
+        .dark #report-card-printable .bg-slate-50 {
+            background-color: #f8fafc !important;
+        }
+      }
+      
+      /* --- Dark Mode Overrides --- */
+      .dark body.animate-aurora-glow, .dark #root .animate-aurora-glow {
+        background: linear-gradient(-45deg, #0f172a, #1e1b4b, #4c1d95, #3730a3);
+        background-size: 400% 400%;
+        animation-name: aurora-glow;
+        color: #e2e8f0 !important; /* slate-200 */
+      }
+      .dark ::-webkit-scrollbar-track { background: #0f172a; } /* slate-900 */
+      .dark ::-webkit-scrollbar-thumb { background: #334155; } /* slate-700 */
+      .dark ::-webkit-scrollbar-thumb:hover { background: #475569; } /* slate-600 */
+
+      .dark .bg-white { background-color: #1e293b !important; } /* slate-800 */
+      .dark .bg-white\/80 { background-color: rgba(15, 23, 42, 0.8) !important; }
+      .dark .bg-white\/60 { background-color: rgba(15, 23, 42, 0.6) !important; }
+      .dark .bg-white\/50 { background-color: rgba(15, 23, 42, 0.5) !important; }
+
+      .dark .text-slate-900 { color: #f8fafc !important; } /* slate-50 */
+      .dark .text-slate-800 { color: #e2e8f0 !important; } /* slate-200 */
+      .dark .text-slate-700 { color: #cbd5e1 !important; } /* slate-300 */
+      .dark .text-slate-600 { color: #94a3b8 !important; } /* slate-400 */
+      .dark .text-slate-500 { color: #94a3b8 !important; } /* slate-400 */
+      .dark .text-slate-400 { color: #64748b !important; } /* slate-500 */
+      .dark .text-slate-300 { color: #475569 !important; } /* slate-600 */
+
+      .dark .border-slate-200 { border-color: #334155 !important; } /* slate-700 */
+      .dark .border-slate-200\/80 { border-color: rgba(51, 65, 85, 0.8) !important; }
+      .dark .border-slate-300 { border-color: #475569 !important; } /* slate-600 */
+      .dark .border-slate-700 { border-color: #1e293b !important; } /* slate-800 */
+
+      .dark .bg-slate-50 { background-color: #0f172a !important; } /* slate-900 */
+      .dark .bg-slate-100 { background-color: #1e293b !important; } /* slate-800 */
+      .dark .bg-slate-900 { background-color: #020617 !important; } /* slate-950 for code blocks */
+
+      .dark .hover\:bg-slate-50:hover { background-color: rgba(30, 41, 59, 0.7) !important; }
+      .dark .hover\:bg-slate-100:hover { background-color: #334155 !important; } /* slate-700 */
+      .dark .hover\:bg-slate-200\/60:hover { background-color: rgba(51, 65, 85, 0.6) !important; }
+      .dark .hover\:bg-slate-200:hover { background-color: #334155 !important; }
+
+      .dark .text-indigo-500 { color: #818cf8 !important; } /* indigo-400 */
+      .dark .text-indigo-600 { color: #a5b4fc !important; } /* indigo-300 */
+      .dark .text-indigo-700 { color: #c7d2fe !important; } /* indigo-200 */
+      .dark .bg-indigo-50 { background-color: rgba(99, 102, 241, 0.15) !important; }
+      .dark .bg-indigo-100 { background-color: #3730a3 !important; }
+      .dark .border-indigo-500 { border-color: #818cf8 !important; }
+      .dark .hover\:text-indigo-600:hover { color: #c7d2fe !important; }
+      .dark .hover\:text-indigo-800:hover { color: #e0e7ff !important; }
+      .dark .hover\:bg-indigo-100:hover { background-color: #4338ca !important; }
+      .dark .hover\:bg-indigo-200:hover { background-color: #4f46e5 !important; }
+      .dark .bg-indigo-50\/50 { background-color: rgba(99, 102, 241, 0.1) !important; }
+
+      .dark .text-red-500 { color: #f87171 !important; }
+      .dark .hover\:text-red-700:hover { color: #ef4444 !important; }
+      .dark .bg-red-50 { background-color: rgba(153, 27, 27, 0.3) !important; }
+      .dark .bg-red-100 { background-color: #991b1b !important; }
+      .dark .text-red-700 { color: #fca5a5 !important; }
+      .dark .text-red-800 { color: #fecaca !important; }
+      .dark .border-red-200 { border-color: #7f1d1d !important; }
+
+      .dark .text-green-600 { color: #4ade80 !important; }
+      .dark .hover\:text-green-800:hover { color: #86efac !important; }
+      .dark .bg-green-50 { background-color: rgba(21, 128, 61, 0.3) !important; }
+      .dark .bg-green-100 { background-color: #15803d !important; }
+      .dark .text-green-700 { color: #86efac !important; }
+      .dark .text-green-800 { color: #bbf7d0 !important; }
+      .dark .border-green-200 { border-color: #166534 !important; }
+      .dark .border-green-400 { border-color: #22c55e !important; }
+
+
+      .dark .bg-amber-100 { background-color: #92400e !important; }
+      .dark .text-amber-800 { color: #fcd34d !important; }
+      .dark .border-amber-400 { border-color: #f59e0b !important; }
+
+      .dark .animated-gradient-bg {
+          background: linear-gradient(-45deg, #818cf8, #a78bfa, #f472b6, #fbbf24);
+          background-size: 400% 400%;
+      }
+      .dark .animated-gradient-bg-green {
+          background: linear-gradient(-45deg, #22c55e, #4ade80, #84cc16, #a3e635);
+          background-size: 400% 400%;
+      }
+      .dark .disabled\:bg-slate-400:disabled,
+      .dark .disabled\:bg-slate-300:disabled {
+          background-color: #334155 !important;
+          color: #64748b !important;
+          animation: none !important;
+          box-shadow: none !important;
+      }
+      
+      .dark #particle-container .particle { background-color: rgba(99, 102, 241, 0.3); }
+      
+      .dark .prose { color: #d1d5db; }
+      .dark .prose strong { color: #f9fafb; }
+      .dark .prose h1, .dark .prose h2, .dark .prose h3, .dark .prose h4 { color: #f9fafb; }
+      .dark .prose a { color: #a5b4fc; }
+      .dark .prose a:hover { color: #c7d2fe; }
+      .dark .prose code { color: #f472b6; }
+      .dark .prose ul > li::marker { color: #9ca3af; }
+      
+      .dark .flowchart-bg {
+        background-color: #1e293b; /* slate-800 */
+         background-image:
+          linear-gradient(rgba(71, 85, 105, 0.3) 1px, transparent 1px),
+          linear-gradient(to right, rgba(71, 85, 105, 0.3) 1px, transparent 1px);
+      }
+      .dark .flow-connector {
+        background: repeating-linear-gradient(
+          to bottom,
+          #64748b, /* slate-500 */
+          #64748b 5px,
+          transparent 5px,
+          transparent 10px
+        );
+      }
+      .dark .flow-connector::after {
+        border-top-color: #64748b; /* slate-500 */
+      }
+      .dark .flow-connector-horizontal {
+        background: repeating-linear-gradient(
+          to right,
+          #64748b, /* slate-500 */
+          #64748b 5px,
+          transparent 5px,
+          transparent 10px
+        );
+      }
+
+      .dark .speaking-highlight { 
+        background-color: #4f46e5 !important; /* indigo-600 */
+        color: #eef2ff !important;
       }
     </style>
   <script type="importmap">
 {
   "imports": {
-    "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
-    "react": "https://esm.sh/react@18.3.1",
-    "recharts": "https://esm.sh/recharts@2.12.7",
-    "@google/genai": "https://esm.sh/@google/genai@1.13.0",
-    "pdfjs-dist": "https://esm.sh/pdfjs-dist@4.5.136",
-    "mermaid": "https://esm.sh/mermaid@10.9.1",
-    "framer-motion": "https://esm.sh/framer-motion@11.3.19",
-    "react-dom/": "https://esm.sh/react-dom@18.3.1/",
-    "react/": "https://esm.sh/react@18.3.1/"
+    "react/": "https://esm.sh/react@^19.1.1/",
+    "react": "https://esm.sh/react@^19.1.1",
+    "@google/genai": "https://esm.sh/@google/genai@^1.13.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.1/",
+    "pdfjs-dist": "https://esm.sh/pdfjs-dist@4.5.136"
   }
 }
 </script>
 <link rel="stylesheet" href="/index.css">
 </head>
-  <body class="bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
+  <body class="text-slate-800 animate-aurora-glow">
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>
